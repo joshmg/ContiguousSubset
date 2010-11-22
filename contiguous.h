@@ -10,7 +10,7 @@
 template <typename DataType, class Utilty>
 class ContiguousSubset : public IContiguousSubset<DataType, Utility> {
   private:
-    struct Point : public Utility::Point { };
+    typedef Utility::Point Point;
     ITileFactory* _tile_factory;
 
   public:

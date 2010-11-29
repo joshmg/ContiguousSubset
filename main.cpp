@@ -8,18 +8,42 @@
 using namespace std;
 
 int main() {
-  cout << "This program effectively allocates 300kb of memory, prints stuff, and then quits." << endl;
+  ContiguousSubset<char, 10> test(2);
+  test.SetDataSource("dat/1.JPG");
 
-  ContiguousSubset<unsigned char> test(3);
-  test.SetDataSource("data.dat");
+  test.SetTileOrigin(&vectf(0, 0));
+  test.Init();
 
-  test.SetTileOrigin(&vect3f(0, 0, 0));
+
+  // move the origin:
+  test.SetTileOrigin(&vectf(2, 2));
   vectf* origin = test.GetTileOrigin();
-  cout << origin->to_string() << endl;
-  delete origin;
+  cout << "(" << (*origin)[0] << ", " << (*origin)[1] << ")" << endl;
 
-  char c;
-  cin >> c;
+  const char* data = test.GetTileData();
+  cout << "data = " << endl;
+
+  cout << " ";
+  for(int j=0;j<10+1;j++) cout << "--";
+  cout << endl;
+
+  for(int i=0;i<10;i++) {
+    cout << " |";
+    for(int j=0;j<10;j++) {
+      if (i == (*origin)[1] && j == (*origin)[0]) cout << "[";
+      cout << data[i*10 + j];
+      if (i == (*origin)[1] && j == (*origin)[0]) cout << "]";
+      else if (!(i == (*origin)[1] && j == (*origin)[0]-1)) cout << " ";
+    }
+    cout << "|" << endl;
+  }
+
+  cout << " ";
+  for(int j=0;j<10+1;j++) cout << "--";
+  cout << endl;
+
+  delete data;
+  delete origin;
 
   return 0;
 }

@@ -18,8 +18,7 @@ class IContiguousSubset {
 
     virtual vectf* GetTileSize() const = 0;
 
-    virtual const T* GetTileData(const vectf* const) const = 0;
-    virtual const T* GetWorldData(const vectf* const) const = 0;
+    virtual const T* GetTileData() const = 0;
 };
 
 #endif

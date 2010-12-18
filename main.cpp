@@ -1,49 +1,60 @@
 // File: main.cpp
 // Written by Joshua Green
 
-#include "contiguous_interface.h"
-#include "contiguous.h"
-#include "vectXf.h"
 #include <iostream>
+#include "Contiguous.h"
 using namespace std;
 
-int main() {
-  ContiguousSubset<char, 10> test(2);
-  test.SetDataSource("dat/1.JPG");
 
-  test.SetTileOrigin(&vectf(0, 0));
-  test.Init();
+template <typename T, int S>
+void print(const ContiguousSubset<T, S>& subset) {
+  int tile_size = subset.GetTileWidth();
 
+  Vect2f origin = subset.GetOrigin();
+  Vect2f tile_offset = subset.GetOffset();
+  cout << "Origin = (" << origin.x << ", " << origin.y << ")" << endl;
+  cout << "Offset = (" << tile_offset.x << ", " << tile_offset.y << ")" << endl;
 
-  // move the origin:
-  test.SetTileOrigin(&vectf(2, 2));
-  vectf* origin = test.GetTileOrigin();
-  cout << "(" << (*origin)[0] << ", " << (*origin)[1] << ")" << endl;
+  tile_offset.y = tile_size - tile_offset.y - 1;
 
-  const char* data = test.GetTileData();
+  const T* data = subset.GetTileData();
   cout << "data = " << endl;
 
-  cout << " ";
-  for(int j=0;j<10+1;j++) cout << "--";
+  cout << " -";
+  for(int j=0;j<tile_size+1;j++) cout << "--";
   cout << endl;
 
-  for(int i=0;i<10;i++) {
+  for(int i=0;i<tile_size;i++) {
     cout << " |";
-    for(int j=0;j<10;j++) {
-      if (i == (*origin)[1] && j == (*origin)[0]) cout << "[";
-      cout << data[i*10 + j];
-      if (i == (*origin)[1] && j == (*origin)[0]) cout << "]";
-      else if (!(i == (*origin)[1] && j == (*origin)[0]-1)) cout << " ";
+    if (i != tile_offset.y || 0 != tile_offset.x) cout << " ";
+    for(int j=0;j<tile_size;j++) {
+      if (i == tile_offset.y && j == tile_offset.x) cout << "[";
+      cout << data[i*tile_size + j];
+      if (i == tile_offset.y && j == tile_offset.x) cout << "]";
+      else if (!(i == tile_offset.y && j == tile_offset.x-1)) cout << " ";
     }
     cout << "|" << endl;
   }
 
-  cout << " ";
-  for(int j=0;j<10+1;j++) cout << "--";
-  cout << endl;
+  cout << " -";
+  for(int j=0;j<tile_size+1;j++) cout << "--";
+  cout << endl << endl;
+}
 
-  delete data;
-  delete origin;
+int main() {
+  TileGenerator<char> tilegen;
+  ContiguousSubset<char, 9> testle;
+
+  testle.SetDataSource(&tilegen);
+
+  testle.SetOrigin(Vect2f(10, 0));
+  print(testle);
+
+  testle.SetOrigin(Vect2f(12, 0));
+  print(testle);
+
+  testle.SetOrigin(Vect2f(0, 0));
+  print(testle);
 
   return 0;
 }

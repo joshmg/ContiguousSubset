@@ -5,6 +5,7 @@
 #define TILE_GENERATOR_H
 
 #include "Vect2f.h"
+#include <cmath>
 
 template <typename T>
 class TileGenerator {
@@ -26,13 +27,13 @@ class TileGenerator {
   T* GetStripFrom(const Vect2f& p0, const Vect2f& p1) const {
     T* data;
     if (p0.x == p1.x) { // column
-      int size = abs(p0.y - p1.y);
+      int size = fabs(p0.y - p1.y);
       data = new T[size];
 
       for (int i=0;i<size;i++) { data[i] = '0' + mod(i, 10); }
     }
     else if (p0.y == p1.y) { // row
-      int size = abs(p0.y - p1.y);
+      int size = fabs(p0.y - p1.y);
       data = new T[size];
 
       for (int i=0;i<size;i++) { data[i] = '0' + mod(i, 10); }
